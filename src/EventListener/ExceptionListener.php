@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use App\Http\DTO\Response\ErrorResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -19,7 +20,8 @@ class ExceptionListener
         if ($exception instanceof HttpException) {
             $responseData['code'] = $exception->getStatusCode();
         }
+        $response = new ErrorResponse($responseData['message'], $responseData['code']);
 
-        $event->setResponse(new JsonResponse($responseData, $responseData['code']));
+        $event->setResponse(new JsonResponse($response, $response->code));
     }
 }
