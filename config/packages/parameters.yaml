@@ -1,2 +1,3 @@
 parameters:
-  authorization_token: '%env(TEST_USER_TOKEN)%'
+  authorization_token: '%env(string:TEST_USER_TOKEN)%'
+  service_commission_percent: '%env(int:SERVICE_COMMISSION_PERCENT)%'
