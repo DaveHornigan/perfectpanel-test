@@ -1,0 +1,2 @@
+parameters:
+  authorization_token: '%env(TEST_USER_TOKEN)%'
