@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  database:
+    image: percona/percona-server:${MYSQL_VERSION:-5.7}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-!ChangeMe!}
+      MYSQL_DB: ${MYSQL_DB:-app}
+      # You should definitely change the password in production
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-!ChangeMe!}
+      MYSQL_USER: ${MYSQL_USER:-app}
+    volumes:
+      - database_data:/var/lib/mysql:rw
+
+  php:
+    build: ./docker
+    links:
+      - database
+    volumes:
+      - .:/var/www:rw
+
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - .:/var/www:rw
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/40-custom.conf
+    links:
+      - php
+
+volumes:
+  ###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
