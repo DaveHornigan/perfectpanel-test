@@ -26,10 +26,10 @@ class BlockChainInfoProviderTest extends TestCase
 
         $prices = $provider->getRates();
 
-        self::assertSame('42646.30', $prices['AUD']->sell);
+        self::assertSame('40973.89', $prices['AUD']->sell);
 
         $prices = $provider->getRates();
 
-        self::assertSame('40973.89', $prices['AUD']->buy);
+        self::assertSame('42646.30', $prices['AUD']->buy);
     }
 }

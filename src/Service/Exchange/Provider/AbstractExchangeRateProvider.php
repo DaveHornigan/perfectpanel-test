@@ -21,14 +21,14 @@ abstract class AbstractExchangeRateProvider implements ExchangeRateProviderInter
 
     protected function getSellRateWithCommission(float $originalRate): string
     {
-        $rateWithCommission = $originalRate + $this->getCommission($originalRate);
+        $rateWithCommission = $originalRate - $this->getCommission($originalRate);
 
         return bcdiv($rateWithCommission, 1, 2);
     }
 
     protected function getBuyRateWithCommission(float $originalRate): string
     {
-        $rateWithCommission = $originalRate - $this->getCommission($originalRate);
+        $rateWithCommission = $originalRate + $this->getCommission($originalRate);
 
         return bcdiv($rateWithCommission, 1, 2);
     }
