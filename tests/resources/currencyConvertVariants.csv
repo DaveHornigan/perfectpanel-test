@@ -1,0 +1,5 @@
+currency_from,currency_to,value,expected_value_from,expected_value_to,expected_rate
+USD,BTC,1.0,1.00,0.0000368860,27110.51
+USD,BTC,0.001,0.01,0.0000003688,27110.51
+BTC,USD,0.001,0.0100000000,271.10,27110.51
+RUB,BTC,1000,1000.00,0.0003836304,2606675.57

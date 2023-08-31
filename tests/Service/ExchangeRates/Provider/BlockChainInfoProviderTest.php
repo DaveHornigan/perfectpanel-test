@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 class BlockChainInfoProviderTest extends TestCase
 {
-    public function testGetRates()
+    public function testGetRates(): void
     {
         $tickerResponse = file_get_contents(dirname(__DIR__, 3) . '/resources/blockchain-info-ticker-response.json');
         $mock = new MockHandler([
