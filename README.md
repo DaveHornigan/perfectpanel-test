@@ -24,3 +24,5 @@ curl -H 'Authorization: Bearer {TOKEN STORED IN TEST_USER_TOKEN}' \
 curl -X POST -H 'Authorization: Bearer {TOKEN STORED IN TEST_USER_TOKEN}' -H "Content-Type: application/json" \
     -d '{"currency_from": "USD", "currency_to": "BTC", "value": 1.00}' 'http://localhost/api/v1?method=convert' # Convert currency
 ```
+
+P.S. It is possible that the commission calculation is mixed up
