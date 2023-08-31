@@ -2,8 +2,7 @@
 
 namespace App\Tests\Service\ExchangeRates\Provider;
 
-use App\Service\ExchangeRates\Enum\ExchangeMethod;
-use App\Service\ExchangeRates\Provider\BlockChainInfoExchangeRateProvider;
+use App\Service\Exchange\Provider\BlockChainInfoExchangeRateProvider;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -13,7 +12,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 class BlockChainInfoProviderTest extends TestCase
 {
-    public function testGetPrices()
+    public function testGetRates()
     {
         $tickerResponse = file_get_contents(dirname(__DIR__, 3) . '/resources/blockchain-info-ticker-response.json');
         $mock = new MockHandler([
@@ -25,12 +24,12 @@ class BlockChainInfoProviderTest extends TestCase
 
         $provider = new BlockChainInfoExchangeRateProvider($client, new ParameterBag(['service_commission_percent' => 2]));
 
-        $prices = $provider->getRates(ExchangeMethod::Sell);
+        $prices = $provider->getRates();
 
-        self::assertSame(42646.302, $prices['AUD']);
+        self::assertSame('42646.30', $prices['AUD']->sell);
 
-        $prices = $provider->getRates(ExchangeMethod::Buy);
+        $prices = $provider->getRates();
 
-        self::assertSame(40973.898, $prices['AUD']);
+        self::assertSame('40973.89', $prices['AUD']->buy);
     }
 }

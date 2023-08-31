@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Service\ExchangeRates\Provider;
+namespace App\Service\Exchange\Provider;
 
-use App\Service\ExchangeRates\Enum\ExchangeMethod;
-use App\Service\ExchangeRates\Rates;
+use App\Service\Exchange\Rates;
+use App\Service\Exchange\ValueObject\CurrencyRate;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Client\ClientExceptionInterface;
 use Psr\Http\Client\ClientInterface;
@@ -21,14 +21,15 @@ class BlockChainInfoExchangeRateProvider extends AbstractExchangeRateProvider
     }
 
     /**
-     * Returns list of 1 BTC prices
-     * @psalm-return array<string, array{15m: float, last: float, buy: float, sell: float, symbol: string}>
+     * Returns array object with list of 1 BTC prices
      */
-    public function getRates(ExchangeMethod $method, array $currency = []): Rates
+    public function getRates(array $currency = []): Rates
     {
         $request = new Request('GET', self::BLOCKCHAIN_URL);
 
         try {
+            // Here it makes sense to cache the result and return it if it is impossible to get data from the service for greater fault tolerance.
+            // But when exchanging, it can cause losses
             $response = $this->client->sendRequest($request);
             $allRates = json_decode($response->getBody(), true, flags: JSON_THROW_ON_ERROR);
             $filteredRates = $currency !== [] ? array_filter(
@@ -36,17 +37,15 @@ class BlockChainInfoExchangeRateProvider extends AbstractExchangeRateProvider
                 static fn(string $key) => in_array($key, $currency, true),
                 ARRAY_FILTER_USE_KEY
             ) : $allRates;
-            asort($filteredRates);
 
-            $key = match ($method) {
-                ExchangeMethod::Sell => 'sell',
-                default => 'buy'
-            };
-
-            $rates = array_map(
-                fn(array $item) => $this->getRateWithCommission($method, $item[$key]),
-                $filteredRates
-            );
+            $rates = [];
+            foreach ($filteredRates as $currencyCode => $filteredRate) {
+                $rates[$currencyCode] = new CurrencyRate(
+                    $this->getSellRateWithCommission($filteredRate['sell']),
+                    $this->getBuyRateWithCommission($filteredRate['buy']),
+                    $currencyCode,
+                );
+            }
 
             return new Rates($rates);
         } catch (ClientExceptionInterface $e) {

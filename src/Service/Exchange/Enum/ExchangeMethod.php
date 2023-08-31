@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\ExchangeRates\Enum;
+namespace App\Service\Exchange\Enum;
 
 enum ExchangeMethod
 {
