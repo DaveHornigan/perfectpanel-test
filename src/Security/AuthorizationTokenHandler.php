@@ -19,7 +19,8 @@ class AuthorizationTokenHandler implements AccessTokenHandlerInterface
      */
     public function getUserBadgeFrom(#[\SensitiveParameter] string $accessToken): UserBadge
     {
-        if ($accessToken !== $this->parameters->get('authorization_token')) {
+        if (preg_match('~^[\w-]{64}$~', $accessToken) === 0
+            || $accessToken !== $this->parameters->get('authorization_token')) {
             throw new InvalidTokenException();
         }
 
